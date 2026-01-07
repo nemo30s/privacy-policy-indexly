@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexly - Never Lose a Great ChatGPT Answer Again</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background: #0D1117;
+            color: #C9D1D9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 24px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0D1117;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #30363D;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 48px;
+            background: #161B22;
+            border: 3px solid #E6EDF3;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #3FB950;
+            border-radius: 50%;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: #3FB950;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #E6EDF3;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #8B949E;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3FB950;
+        }
+
+        .nav-cta {
+            background: #3FB950;
+            color: #0D1117;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-cta:hover {
+            background: #4ec961;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(63, 185, 80, 0.3);
+        }
+
+        /* Hero Section - FULL VIEWPORT */
+        .hero {
+            min-height: calc(100vh - 100px);
+            display: flex;
+            align-items: center;
+            padding: 40px 60px 0;
+            background: #0D1117;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 45% 55%;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            line-height: 1.15;
+            color: #E6EDF3;
+            margin-bottom: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #3FB950 0%, #2ea043 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: #8B949E;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            max-width: 520px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .cta-secondary {
+            color: #8B949E;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            padding: 18px 24px;
+            cursor: pointer;
+        }
+
+        .cta-secondary:hover {
+            color: #3FB950;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .video-modal.active {
+            display: flex;
+        }
+
+        .video-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            background: #161B22;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .video-modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        /* Privacy Policy Modal */
+        .privacy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .privacy-modal.active {
+            display: flex;
+        }
+
+        .privacy-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: #161B22;
+            border-radius: 16px;
+            padding: 60px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            animation: modalFadeIn 0.3s ease-out;
+            border: 1px solid #30363D;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .privacy-modal-content h1 {
+            color: #E6EDF3;
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .privacy-modal-content h2 {
+            color: #E6EDF3;
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .privacy-modal-content p {
+            color: #8B949E;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .privacy-modal-content ul {
+            color: #8B949E;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .privacy-modal-content li {
+            margin-bottom: 8px;
+        }
+
+        .privacy-modal-content strong {
+            color: #E6EDF3;
+        }
+
+        .privacy-modal-content hr {
+            border: none;
+            border-top: 1px solid #30363D;
+            margin: 40px 0;
+        }
+
+        .privacy-modal-content code {
+            background: #21262D;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #3FB950;
+        }
+
+        .privacy-modal-content ol {
+            color: #8B949E;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .privacy-modal-content ol li {
+            margin-bottom: 8px;
+        }
+
+        .privacy-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #8B949E;
+            font-size: 32px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+
+        .privacy-close:hover {
+            color: #E6EDF3;
+            background: #21262D;
+            transform: scale(1.1);
+        }
+
+        .cta-primary {
+            background: #3FB950;
+            color: #0D1117;
+            padding: 18px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cta-primary:hover {
+            background: #4ec961;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(63, 185, 80, 0.3);
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #8B949E;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .browser-mockup {
+            background: #161B22;
+            border-radius: 16px;
+            border: 1px solid #30363D;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 750px;
+        }
+
+        .browser-header {
+            background: #21262D;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #30363D;
+        }
+
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .browser-content {
+            padding: 32px;
+            background: #0D1117;
+        }
+
+        .demo-card {
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .demo-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .demo-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .demo-card:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+
+        .demo-card:hover {
+            border-color: #3FB950;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(63, 185, 80, 0.15);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .demo-title {
+            color: #E6EDF3;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .demo-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .demo-tag {
+            background: #3FB95020;
+            color: #3FB950;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .demo-text {
+            color: #8B949E;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .demo-search {
+            background: #161B22;
+            border: 2px solid #30363D;
+            border-radius: 10px;
+            padding: 16px 20px;
+            color: #8B949E;
+            font-size: 15px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-search:hover {
+            border-color: #3FB950;
+        }
+
+        .demo-search::after {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
+            animation: searchShimmer 3s infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes searchShimmer {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 16px;
+            background: #3FB950;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .floating-badge {
+            position: absolute;
+            background: #3FB950;
+            color: #0D1117;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(63, 185, 80, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .badge-1 {
+            top: -30px;
+            right: -60px;
+            animation-delay: 0s;
+        }
+
+        .badge-2 {
+            bottom: 30px;
+            left: -70px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+            }
+            50% { 
+                transform: translateY(-16px) scale(1.05);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 140px 60px;
+            background: #0D1117;
+        }
+
+        .features-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 48px;
+            color: #E6EDF3;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            font-size: 20px;
+            color: #8B949E;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 12px;
+            padding: 40px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #3FB950;
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+        }
+
+        .feature-card h3 {
+            color: #E6EDF3;
+            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: #8B949E;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 140px 60px;
+            background: #161B22;
+        }
+
+        .how-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            display: grid;
+            gap: 100px;
+            margin-top: 80px;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .step:nth-child(even) .step-content {
+            order: 2;
+        }
+
+        .step:nth-child(even) .step-visual {
+            order: 1;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #3FB950;
+            color: #0D1117;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 48px;
+            font-weight: 800;
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+
+        .step h3 {
+            font-size: 40px;
+            color: #E6EDF3;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .step p {
+            font-size: 20px;
+            color: #8B949E;
+            line-height: 1.7;
+        }
+
+        .step-visual {
+            background: #0D1117;
+            border: 1px solid #30363D;
+            border-radius: 12px;
+            padding: 60px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-placeholder {
+            color: #8B949E;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 140px 60px;
+            background: #0D1117;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #161B22;
+            border: 1px solid #30363D;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: #3FB950;
+        }
+
+        .faq-question {
+            color: #E6EDF3;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .faq-answer {
+            color: #8B949E;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #3FB950 0%, #2ea043 100%);
+            padding: 120px 60px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 56px;
+            color: #fff;
+            margin-bottom: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-section p {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 48px;
+        }
+
+        .cta-button {
+            background: #fff;
+            color: #2ea043;
+            padding: 20px 48px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 20px;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #161B22;
+            padding: 60px 60px 40px;
+            border-top: 1px solid #30363D;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .footer-links a {
+            color: #8B949E;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #3FB950;
+        }
+
+        footer p {
+            color: #8B949E;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-container {
+                gap: 60px;
+            }
+
+            .hero-content h1 {
+                font-size: 48px;
+            }
+        }
+
+        @media (max-width: 968px) {
+            nav {
+                padding: 20px 30px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 60px 30px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 42px;
+            }
+
+            .hero-content p {
+                max-width: 100%;
+            }
+
+            .cta-group {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .trust-badge {
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .step:nth-child(even) .step-content,
+            .step:nth-child(even) .step-visual {
+                order: initial;
+            }
+
+            .features,
+            .how-it-works,
+            .faq,
+            .cta-section {
+                padding: 80px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">Indexly</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How it Works</a>
+            <a href="#faq">FAQ</a>
+        </div>
+        <a href="#" class="nav-cta">
+            <span>Add to Chrome</span>
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Never lose a <span class="highlight">great answer</span> again</h1>
+                <p>Save, organize, and instantly find your best ChatGPT conversations. Build your personal AI knowledge base.</p>
+                
+                <div class="cta-group">
+                    <a href="#" class="cta-primary">
+                        <span>Add to Chrome</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="cta-secondary" id="watchDemoBtn">
+                        <span>▶</span>
+                        <span>Watch Demo</span>
+                    </a>
+                </div>
+
+                <div class="trust-badge">
+                    <span style="font-size: 16px; color: #3FB950;">⚡</span>
+                    <span style="font-weight: 600; color: #E6EDF3;">Free forever</span>
+                    <span style="margin: 0 8px; color: #30363D;">•</span>
+                    <span>No account needed</span>
+                    <span style="margin: 0 8px; color: #30363D;">•</span>
+                    <span>2-min setup</span>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="floating-badge badge-1">✓ Privacy First</div>
+                <div class="browser-mockup">
+                    <div class="browser-header">
+                        <div class="browser-dot dot-red"></div>
+                        <div class="browser-dot dot-yellow"></div>
+                        <div class="browser-dot dot-green"></div>
+                    </div>
+                    <div class="browser-content">
+                        <div class="demo-search">
+                            <span style="font-size: 18px;">🔍</span>
+                            <span>Search your saved answers<span class="typing-cursor"></span></span>
+                        </div>
+                        
+                        <div class="demo-card">
+                            <div class="demo-header">
+                                <div class="demo-title">Python async/await explanation</div>
+                                <div class="demo-tags">
+                                    <span class="demo-tag">python</span>
+                                    <span class="demo-tag">coding</span>
+                                </div>
+                            </div>
+                            <div class="demo-text">
+                                Here's how async/await works in Python...
+                            </div>
+                        </div>
+
+                        <div class="demo-card">
+                            <div class="demo-header">
+                                <div class="demo-title">Marketing funnel strategy</div>
+                                <div class="demo-tags">
+                                    <span class="demo-tag">marketing</span>
+                                </div>
+                            </div>
+                            <div class="demo-text">
+                                A successful marketing funnel consists of...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-badge badge-2">⚡ Instant</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Everything you need, nothing you don't</h2>
+                <p>Simple, powerful, and built for speed</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>One-Click Save</h3>
+                    <p>Hover over any ChatGPT message and click "Save". No copy-pasting, no screenshots.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3>Smart Tagging</h3>
+                    <p>Organize with custom tags. Find exactly what you need when you need it.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Search</h3>
+                    <p>Type and find. Lightning-fast search through all your saved answers.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Jump Back</h3>
+                    <p>Click any saved answer to return to the original ChatGPT conversation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy First</h3>
+                    <p>Your data stays on your device. No cloud, no tracking, no data collection.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Beautiful UI</h3>
+                    <p>Clean, minimal design that stays out of your way. Dark mode included.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="how-container">
+            <div class="section-header">
+                <h2>How it works</h2>
+                <p>Three simple steps to never lose an answer again</p>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-content">
+                        <span class="step-number">1</span>
+                        <h3>Hover & Save</h3>
+                        <p>Move your mouse over any ChatGPT message. A "Save" button appears. Click it. That's it.</p>
+                    </div>
+                    <div class="step-visual">
+                        <img src="hover-save.gif" alt="Hover and save" style="width: 100%; border-radius: 12px;">
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <span class="step-number">2</span>
+                        <h3>Add Tags</h3>
+                        <p>Type relevant tags to organize your answer. "python", "marketing", "recipes" - whatever makes sense to you.</p>
+                    </div>
+                    <div class="step-visual">
+                        <img src="tag-gif.gif" alt="Tag Input" style="width: 100%; border-radius: 12px;">
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-content">
+                        <span class="step-number">3</span>
+                        <h3>Search & Find</h3>
+                        <p>Open Indexly, type what you're looking for, and find it instantly. Click to jump back to the full conversation.</p>
+                    </div>
+                    <div class="step-visual">
+                        <div class="step-placeholder">
+                            <img src="search-find.gif" alt="Tag Input" style="width: 100%; border-radius: 12px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="faq-container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about Indexly</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is Indexly free?</div>
+                <div class="faq-answer">Yes! Indexly is completely free to use. No credit card required, no hidden fees.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Where is my data stored?</div>
+                <div class="faq-answer">All your saved answers are stored locally on your device. Nothing is sent to the cloud. Your data is 100% private and under your control.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Does it work with Claude or other AI tools?</div>
+                <div class="faq-answer">Indexly is purpose-built for ChatGPT with deep integration into its interface. We're exploring other AI platforms based on user demand.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How many answers can I save?</div>
+                <div class="faq-answer">You can save thousands of answers using Chrome's local storage. More than enough for even power users!</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I export my saved answers?</div>
+                <div class="faq-answer">Not yet, but it's on our roadmap! Want this feature? Let us know and we'll prioritize it.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Start building your knowledge base</h2>
+        <p>Save your best ChatGPT answers in seconds</p>
+        <a href="#" class="cta-button">Add to Chrome</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Chrome Web Store</a>
+                <a href="#">Support</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="#">Twitter</a>
+            </div>
+            <p>© 2025 Indexly</p>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-modal-content">
+            <button class="modal-close" id="closeModal">×</button>
+            <!-- Replace VIDEO_ID with your YouTube video ID when ready -->
+            <iframe 
+                id="demoVideo"
+                src="" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="privacy-modal" id="privacyModal">
+        <div class="privacy-modal-content">
+            <button class="privacy-close" id="closePrivacyModal">×</button>
+            <h1>Privacy Policy for Indexly Chrome Extension</h1>
+            <p><strong>Last Updated:</strong> January 7th 2026</p>
+            
+            <h2>Overview</h2>
+            <p>Indexly ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we handle information when you use our Chrome extension.</p>
+            
+            <h2>Data Collection</h2>
+            <p><strong>We do not collect, store, or transmit any personal data.</strong></p>
+            <p>Indexly operates entirely on your local device:</p>
+            <ul>
+                <li>All saved messages are stored locally in your browser's storage</li>
+                <li>No data is sent to our servers</li>
+                <li>No data is shared with third parties</li>
+                <li>No analytics or tracking is performed</li>
+            </ul>
+            
+            <h2>Local Storage</h2>
+            <p>The extension uses Chrome's local storage API to save:</p>
+            <ul>
+                <li>Your saved ChatGPT messages</li>
+                <li>Tags and organization data</li>
+                <li>Search preferences</li>
+            </ul>
+            <p>This data remains on your device and is never transmitted anywhere.</p>
+            
+            <h2>Permissions</h2>
+            <p>Indexly requires the following permissions:</p>
+            <ul>
+                <li><strong>activeTab</strong>: To detect when you're on ChatGPT and inject the save button</li>
+                <li><strong>storage</strong>: To save your messages locally on your device</li>
+            </ul>
+            
+            <h2>Host Permissions</h2>
+            <p>The extension only works on:</p>
+            <ul>
+                <li><code>https://chat.openai.com/*</code></li>
+                <li><code>https://chatgpt.com/*</code></li>
+            </ul>
+            <p>This is required to inject the save functionality into ChatGPT pages.</p>
+            
+            <h2>Third-Party Services</h2>
+            <p>Indexly does not use any third-party services, analytics, or tracking tools.</p>
+            
+            <h2>Data Deletion</h2>
+            <p>You can delete all your saved data at any time by:</p>
+            <ol>
+                <li>Opening the extension popup</li>
+                <li>Deleting individual messages, or</li>
+                <li>Uninstalling the extension (which removes all local data)</li>
+            </ol>
+            
+            <h2>Children's Privacy</h2>
+            <p>Indexly is not intended for users under 13 years of age. We do not knowingly collect information from children.</p>
+            
+            <h2>Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by updating the "Last Updated" date.</p>
+            
+            <h2>Contact Us</h2>
+            <p>If you have questions about this Privacy Policy, please contact us at:</p>
+            <p>support@indexly.app</p>
+            
+            <hr>
+            
+            <p><strong>Summary:</strong> Indexly is a privacy-first extension. All data stays on your device. We don't collect anything.</p>
+        </div>
+    </div>
+
+    <script>
+        const watchDemoBtn = document.getElementById('watchDemoBtn');
+        const videoModal = document.getElementById('videoModal');
+        const closeModal = document.getElementById('closeModal');
+        const demoVideo = document.getElementById('demoVideo');
+
+        // Replace with your YouTube video ID
+        const YOUTUBE_VIDEO_ID = 'dQw4w9WgXcQ'; // Change this to your video ID
+
+        watchDemoBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            videoModal.classList.add('active');
+            // Load video when modal opens (better performance)
+            demoVideo.src = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1`;
+        });
+
+        closeModal.addEventListener('click', () => {
+            videoModal.classList.remove('active');
+            // Stop video when closing
+            demoVideo.src = '';
+        });
+
+        // Close on background click
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                videoModal.classList.remove('active');
+                demoVideo.src = '';
+            }
+        });
+
+        // Privacy Policy Modal
+        const privacyPolicyBtn = document.getElementById('privacyPolicyBtn');
+        const privacyModal = document.getElementById('privacyModal');
+        const closePrivacyModal = document.getElementById('closePrivacyModal');
+
+        privacyPolicyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.classList.add('active');
+        });
+
+        closePrivacyModal.addEventListener('click', () => {
+            privacyModal.classList.remove('active');
+        });
+
+        // Close on background click
+        privacyModal.addEventListener('click', (e) => {
+            if (e.target === privacyModal) {
+                privacyModal.classList.remove('active');
+            }
+        });
+
+        // Close on ESC key (handles both modals)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (videoModal.classList.contains('active')) {
+                    videoModal.classList.remove('active');
+                    demoVideo.src = '';
+                }
+                if (privacyModal.classList.contains('active')) {
+                    privacyModal.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
